@@ -1,6 +1,41 @@
 const db = require("../connection")
+const { createTopics, createUsers, createArticles, createComments, insertTopics, insertUsers, insertArticles, insertComments } = require("../seeds/utils")
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
-  return db.query(); //<< write your first query in here.
+  return db.query(`DROP TABLE IF EXISTS topics`)
+  .then(() => {
+    return db.query(`DROP TABLE IF EXISTS users`)
+  })
+  .then(() => {
+    return db.query(`DROP TABLE IF EXISTS articles`)
+  })
+  .then(() => {
+    return db.query(`DROP TABLE IF EXISTS comments`)
+  })
+  .then(() => {
+    return createTopics()
+  })
+  .then(() => {
+    return createUsers()
+  })
+  .then(() => {
+    return createArticles()
+  })
+  .then(() => {
+    return createComments()
+  })
+  .then(() => {
+    return insertTopics(topicData)
+  })
+  .then(() => {
+    return insertUsers(userData)
+  })
+  .then(() => {
+    return insertArticles(articleData)
+  })
+  .then((insertedArticles) => {
+    // console.log(insertedArticles.rows)
+    return insertComments(commentData, insertedArticles.rows)
+  });
 };
 module.exports = seed;
