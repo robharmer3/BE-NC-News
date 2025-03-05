@@ -2,15 +2,15 @@ const db = require("../connection")
 const { createTopics, createUsers, createArticles, createComments, insertTopics, insertUsers, insertArticles, insertComments } = require("../seeds/utils")
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
-  return db.query(`DROP TABLE IF EXISTS topics`)
-  .then(() => {
-    return db.query(`DROP TABLE IF EXISTS users`)
-  })
+  return db.query(`DROP TABLE IF EXISTS comments`)
   .then(() => {
     return db.query(`DROP TABLE IF EXISTS articles`)
   })
   .then(() => {
-    return db.query(`DROP TABLE IF EXISTS comments`)
+    return db.query(`DROP TABLE IF EXISTS users`)
+  })
+  .then(() => {
+    return db.query(`DROP TABLE IF EXISTS topics`)
   })
   .then(() => {
     return createTopics()
