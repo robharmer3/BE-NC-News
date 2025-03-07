@@ -124,22 +124,15 @@ function articlesLookUp(insertedArticles){
 function insertComments(comments, insertedArticles) {
   const titleLookUp = articlesLookUp(insertedArticles)
 
-  const timestampConvert = comments.map((comment) => {
-    return convertTimestampToDate(comment)
-  })
-
-  timestampConvert.map((comment) => {
+  const formattedComments = comments.map((comment) => {
     comment.article_id = titleLookUp[comment.article_title]
     delete comment.article_title
-  })
-
-  const formattedComments = timestampConvert.map((comment) => {
     return [
       comment.article_id,
       comment.body,
       comment.votes,
       comment.author,
-      comment.created_at
+      convertTimestampToDate(comment).created_at
     ]
   })
 
