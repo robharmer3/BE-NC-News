@@ -34,7 +34,6 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     return insertArticles(articleData)
   })
   .then((insertedArticles) => {
-    // console.log(insertedArticles.rows)
     return insertComments(commentData, insertedArticles.rows)
   });
 };

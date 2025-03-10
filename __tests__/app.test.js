@@ -25,7 +25,7 @@ describe("GET /api", () => {
 });
 
 describe("GET /api/topics", () => {
-  test("200: Responds with an array of topic objects", () => {
+  test("200: Responds with an array of all topic objects", () => {
     return request(app)
     .get("/api/topics")
     .expect(200)
@@ -62,7 +62,6 @@ describe("GET /api/articles/:article_id", () => {
     .get("/api/articles/3")
     .expect(200)
     .then(({ body }) => {
-      console.log(body)
       expect(body.article).toMatchObject({
         article_id: 3,
         title: "Eight pug gifs that remind me of mitch",
@@ -90,6 +89,44 @@ describe("GET /api/articles/:article_id", () => {
     .expect(400)
     .then(({ body }) => {
       expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
+})
+
+describe("GET /api/articles", () => {
+  test("200: Responds with an array of all article objects", () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({ body }) => {
+      body.articles.forEach((article) => {
+        expect(article).toMatchObject({
+          article_id : expect.any(Number),
+          title : expect.any(String),
+          topic : expect.any(String),
+          author : expect.any(String),
+          created_at : expect.any(String),
+          votes : expect.any(Number),
+          article_img_url : expect.any(String),
+          comment_count : expect.any(String)
+        })
+      })
+    })
+  })
+  test("200: Article Object should be sorted by date in descending order, as the default", () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.articles).toBeSorted({ key: "created_at", descending: true})
+    })
+  })
+  test("404: Responds with an page not found error when given a invalid path", () => {
+    return request(app)
+    .get("/api/article")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Page not found, check your spelling?")
     })
   })
 })
