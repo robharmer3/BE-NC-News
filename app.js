@@ -4,6 +4,7 @@ const endpoints = require("./endpoints.json");
 const { getAllTopics } = require("./controllers/controller.topics");
 const { handleServerError, handleIncorrectPath, handleCustomError, handleSqlError } = require("./controllers/controller.errors");
 const { getArticleById, getAllArticles } = require("./controllers/controller.articles");
+const { getCommentsByArticleId } = require("./controllers/controller.comments");
 
 app.get("/api", (request, response) => {
     response.status(200).send({ endpoints });
@@ -14,6 +15,8 @@ app.get("/api/topics", getAllTopics)
 app.get("/api/articles", getAllArticles)
 
 app.get("/api/articles/:article_id", getArticleById)
+
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId)
 
 app.all("/api/*", handleIncorrectPath)
 

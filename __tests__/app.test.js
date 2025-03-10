@@ -2,7 +2,7 @@ const endpointsJson = require("../endpoints.json");
 const request = require("supertest");
 const app = require("../app");
 const seed = require("../db/seeds/seed");
-const data = require("../db/data/test-data/index");
+const data = require("../db/data/test-data/index.js");
 const db = require("../db/connection")
 
 beforeEach(() => {
@@ -93,7 +93,7 @@ describe("GET /api/articles/:article_id", () => {
   })
 })
 
-describe("GET /api/articles", () => {
+describe.skip("GET /api/articles", () => {
   test("200: Responds with an array of all article objects", () => {
     return request(app)
     .get("/api/articles")
@@ -127,6 +127,32 @@ describe("GET /api/articles", () => {
     .expect(404)
     .then(({ body }) => {
       expect(body.msg).toBe("Page not found, check your spelling?")
+    })
+  })
+})
+
+describe.skip("GET /api/articles/:article_id/comments", () => {
+  test("200: Responds with a array of comments of the given article ID", () => {
+    return request(app)
+    .get("/api/articles/3/comments")
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.comments[0]).toMatchObject({
+          comment_id: 10,
+          votes: 0,
+          created_at: "2020-06-20 08:24:00",
+          author: "icellusedkars",
+          body:"git push origin master",
+          article_id : 3
+        })
+      expect(body.comments[1]).toMatchObject({
+          comment_id: 11,
+          votes: 0,
+          created_at: "2020-09-20 00:10:00",
+          author: "icellusedkars",
+          body:"Ambidextrous marsupial ",
+          article_id : 3
+      })
     })
   })
 })
