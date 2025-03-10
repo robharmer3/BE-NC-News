@@ -55,3 +55,41 @@ describe("GET /api/topics", () => {
     })
   })
 })
+
+describe("GET /api/articles/:article_id", () => {
+  test("200: Responds with individual article of given ID", () => {
+    return request(app)
+    .get("/api/articles/3")
+    .expect(200)
+    .then(({ body }) => {
+      console.log(body)
+      expect(body.article).toMatchObject({
+        article_id: 3,
+        title: "Eight pug gifs that remind me of mitch",
+        topic: "mitch",
+        author: "icellusedkars",
+        body: "some gifs",
+        created_at: "2020-11-03T09:12:00.000Z",
+        votes: 0,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"  
+      })
+    })
+  })
+  test("404: Responds with an error when given a valid ID but not article exists", () => {
+    return request(app)
+    .get("/api/articles/50")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Resourse not found")
+      })
+    })
+  test("400: Responds with an bad request error when given a invalid ID", () => {
+    return request(app)
+    .get("/api/articles/darthvader")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
+})
