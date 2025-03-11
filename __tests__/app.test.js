@@ -93,7 +93,7 @@ describe("GET /api/articles/:article_id", () => {
   })
 })
 
-describe.skip("GET /api/articles", () => {
+describe("GET /api/articles", () => {
   test("200: Responds with an array of all article objects", () => {
     return request(app)
     .get("/api/articles")
@@ -131,28 +131,52 @@ describe.skip("GET /api/articles", () => {
   })
 })
 
-describe.skip("GET /api/articles/:article_id/comments", () => {
+describe("GET /api/articles/:article_id/comments", () => {
   test("200: Responds with a array of comments of the given article ID", () => {
     return request(app)
     .get("/api/articles/3/comments")
     .expect(200)
     .then(({ body }) => {
       expect(body.comments[0]).toMatchObject({
+        comment_id: 11,
+        votes: 0,
+        created_at: expect.any(String),
+        author: "icellusedkars",
+        body:"Ambidextrous marsupial",
+        article_id : 3
+      })
+      expect(body.comments[1]).toMatchObject({
           comment_id: 10,
           votes: 0,
-          created_at: "2020-06-20 08:24:00",
+          created_at: expect.any(String),
           author: "icellusedkars",
           body:"git push origin master",
           article_id : 3
-        })
-      expect(body.comments[1]).toMatchObject({
-          comment_id: 11,
-          votes: 0,
-          created_at: "2020-09-20 00:10:00",
-          author: "icellusedkars",
-          body:"Ambidextrous marsupial ",
-          article_id : 3
       })
+    })
+  })
+  test("200: Comments should be most recent first (descending)", () => {
+    return request(app)
+    .get("/api/articles/3/comments")
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.comments).toBeSorted({key: "created_at", descending: true})
+    })
+  })
+  test("404: Responds with an error when given a valid ID but not article exists", () => {
+    return request(app)
+    .get("/api/articles/50/comments")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Resourse not found")
+    })
+  })
+  test("400: Responds with an bad request error when given a invalid ID", () => {
+    return request(app)
+    .get("/api/articles/darthvader/comments")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
     })
   })
 })

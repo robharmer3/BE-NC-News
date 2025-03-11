@@ -1,6 +1,5 @@
 const db = require("../../db/connection");
 const format = require("pg-format");
-const articles = require("../data/test-data/articles");
 
 function convertTimestampToDate ({ created_at, ...otherProperties }) {
   if (!created_at) return { ...otherProperties };
@@ -30,8 +29,8 @@ function createArticles() {
     `CREATE TABLE articles
     (article_id SERIAL PRIMARY KEY,
     title VARCHAR,
-    topic VARCHAR REFERENCES topics(slug),
-    author VARCHAR REFERENCES users(username),
+    topic VARCHAR REFERENCES topics(slug) ON DELETE CASCADE NOT NULL,
+    author VARCHAR REFERENCES users(username) ON DELETE CASCADE NOT NULL,
     body TEXT,
     created_at TIMESTAMP,
     votes INT DEFAULT 0,
@@ -43,10 +42,10 @@ function createComments() {
   return db.query(
     `CREATE TABLE comments
     (comment_id SERIAL PRIMARY KEY,
-    article_id INT REFERENCES articles(article_id),
+    article_id INT REFERENCES articles(article_id) ON DELETE CASCADE NOT NULL,
     body TEXT,
     votes INT DEFAULT 0,
-    author VARCHAR REFERENCES users(username),
+    author VARCHAR REFERENCES users(username) ON DELETE CASCADE NOT NULL,
     created_at TIMESTAMP)`
   )
 }
@@ -113,7 +112,7 @@ function articlesLookUp(insertedArticles){
     return {}
   }
 
-  titleLookUp = {}
+  const titleLookUp = {}
   insertedArticles.forEach(article => {
     titleLookUp[article.title] = article.article_id
   });
@@ -126,22 +125,20 @@ function insertComments(comments, insertedArticles) {
 
   const formattedComments = comments.map((comment) => {
     comment.article_id = titleLookUp[comment.article_title]
-    delete comment.article_title
     return [
-      comment.article_id,
-      comment.body,
-      comment.votes,
-      comment.author,
-      convertTimestampToDate(comment).created_at
-    ]
-  })
+          comment.article_id,
+          comment.body,
+          comment.votes,
+          comment.author,
+          convertTimestampToDate(comment).created_at
+        ]})
 
   return db.query(format(
     `INSERT INTO comments
     (article_id, body, votes, author, created_at)
     VALUES
     %L
-    RETURNING *`,
+    RETURNING *;`,
     formattedComments
   ))
 }
