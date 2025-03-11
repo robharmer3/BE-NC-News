@@ -189,3 +189,61 @@ describe("GET /api/articles/:article_id/comments", () => {
     })
   })
 })
+
+describe("POST /api/articels/:article_id/comments", () => {
+  test("201: Responds with the posted comment", () => {
+    return request(app)
+    .post("/api/articles/2/comments")
+    .send({
+      username: "butter_bridge",
+      body: "Hello World!"
+    })
+    .expect(201)
+    .then(({ body }) => {
+      expect(body.comment).toMatchObject({
+        comment_id : 19,
+        article_id: 2,
+        body: "Hello World!",
+        votes: 0,
+        author: "butter_bridge",
+        created_at: null
+      })
+    })
+  })
+  test("404: Response with page not found when given a valid article ID, but not article exists", () => {
+    return request(app)
+    .post("/api/articles/50/comments")
+    .send({
+      username: "butter_bridge",
+      body: "Hello World!"
+    })
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Resource not found")
+    })
+  })
+  test("400: Responds bad request when given an invalid article ID", () => {
+    return request(app)
+    .post("/api/articles/darthvader/comments")
+    .send({
+        username: "butter_bridge",
+        body: "Hello World!"
+    })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
+  test("404: Responds with page not found when given a invalid username", () => {
+    return request(app)
+    .post("/api/articles/2/comments")
+    .send({
+      username: "Darth Vader",
+      body: "Hello World!"
+    })
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Resource not found")
+    })
+  })
+})

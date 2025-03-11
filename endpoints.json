@@ -63,5 +63,18 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description" : "serves the added comment to the given article ID",
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 19,
+        "article_id": 2,
+        "body": "'Hello World!'",
+        "votes": 0,
+        "author": "'butter_bridge'",
+        "created_at": null
+      }
+    }
   }
 }
