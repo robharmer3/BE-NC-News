@@ -1,3 +1,4 @@
+const { checkIfExists } = require("../app.utils");
 const db = require("../db/connection");
 
 exports.fetchAllArticles = () => {
@@ -21,7 +22,6 @@ exports.fetchAllArticles = () => {
     })
 }
 
-
 exports.fetchArticleByID = (article_id) => {
     return db.query(
         `SELECT * FROM articles
@@ -33,5 +33,22 @@ exports.fetchArticleByID = (article_id) => {
             return Promise.reject({status: 404, msg: "Resourse not found"})
         }
         return rows[0]
+    })
+}
+
+exports.updateArticleById = (article_id, votes) => {
+    const articleCheck = checkIfExists("articles", "article_id", article_id)
+
+    const dbQuery = db.query(
+        `UPDATE articles
+        SET votes = votes + $1
+        WHERE article_id = $2
+        RETURNING *`,
+        [votes, article_id]
+    )
+
+    return Promise.all([dbQuery, articleCheck])
+    .then(([ comment ]) => {
+        return comment.rows[0]
     })
 }

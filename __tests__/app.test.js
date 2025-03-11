@@ -190,7 +190,7 @@ describe("GET /api/articles/:article_id/comments", () => {
   })
 })
 
-describe("POST /api/articels/:article_id/comments", () => {
+describe("POST /api/articles/:article_id/comments", () => {
   test("201: Responds with the posted comment", () => {
     return request(app)
     .post("/api/articles/2/comments")
@@ -240,6 +240,73 @@ describe("POST /api/articels/:article_id/comments", () => {
     .send({
       username: "Darth Vader",
       body: "Hello World!"
+    })
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Resource not found")
+    })
+  })
+})
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("201: Responds with the updated article of the given article ID", () => {
+    return request(app)
+    .patch("/api/articles/6")
+    .send({
+      inc_votes: 1
+    })
+    .expect(201)
+    .then(({body}) => {
+      expect(body.article).toMatchObject({
+        article_id: 6,
+        title: "A",
+        topic: "mitch",
+        author: "icellusedkars",
+        body: "Delicious tin of cat food",
+        created_at: expect.any(String),
+        votes: 1,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"  
+      })
+    })
+  })
+  test("201: Responds with the updated article of the given article ID", () => {
+    return request(app)
+    .patch("/api/articles/1")
+    .send({
+      inc_votes: -100
+    })
+    .expect(201)
+    .then(({body}) => {
+      expect(body.article).toMatchObject({
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: expect.any(String),
+        votes: 0,
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      })
+    })
+  })
+  test("400: Responds with a bad request, when given an invalid ID", () => {
+    return request(app)
+    .patch("/api/articles/darthvader")
+    .send({
+      inc_votes: 1
+    })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
+  test("404: Responds with page not found, when given an valid ID but article ID is not found", () => {
+    return request(app)
+    .patch("/api/articles/50")
+    .send({
+      inc_votes: 1
     })
     .expect(404)
     .then(({ body }) => {
