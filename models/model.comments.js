@@ -4,8 +4,7 @@ const db = require("../db/connection");
 
 exports.fetchCommentsByArticleId = (article_id) => {
     const idCheck = checkIfExists("articles", "article_id", article_id)
-    .then(({rows}) => {return rows})
-    
+  
     const dbQuery = db.query(
         `SELECT * FROM comments
         WHERE article_id = $1
@@ -22,15 +21,9 @@ exports.fetchCommentsByArticleId = (article_id) => {
 
 exports.createCommentsByArticleId = (username, body, article_id) => {
     const articleIdCheck = checkIfExists("articles", "article_id", article_id)
-    .then(({rows}) => {
-        return rows
-    })
 
     const usernameCheck = checkIfExists("users", "username", username)
-    .then(({rows}) => {
-        return rows
-    })
-
+    
     const dbQuery = db.query(`
         INSERT INTO comments
         (author, body, article_id)
