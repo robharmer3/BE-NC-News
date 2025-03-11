@@ -137,6 +137,7 @@ describe("GET /api/articles/:article_id/comments", () => {
     .get("/api/articles/3/comments")
     .expect(200)
     .then(({ body }) => {
+      expect(body.comments.length).toBe(2)
       expect(body.comments[0]).toMatchObject({
         comment_id: 11,
         votes: 0,
@@ -163,12 +164,20 @@ describe("GET /api/articles/:article_id/comments", () => {
       expect(body.comments).toBeSorted({key: "created_at", descending: true})
     })
   })
-  test("404: Responds with an error when given a valid ID but not article exists", () => {
+  test("200: Responds with an empty array when given a valid ID by no comments are found", () => {
+    return request(app)
+    .get("/api/articles/2/comments")
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.comments.length).toBe(0)
+    })
+  })
+  test("404: Responds with an error when given a valid ID but no article exists", () => {
     return request(app)
     .get("/api/articles/50/comments")
     .expect(404)
     .then(({ body }) => {
-      expect(body.msg).toBe("Resourse not found")
+      expect(body.msg).toBe("Resource not found")
     })
   })
   test("400: Responds with an bad request error when given a invalid ID", () => {
