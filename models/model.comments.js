@@ -44,3 +44,20 @@ exports.createCommentsByArticleId = (username, body, article_id) => {
         return comment.rows[0]
     })
 }
+
+exports.removeCommentsById = (comment_id) => {
+    const idCheck = checkIfExists("comments", "comment_id", comment_id)
+    
+    const dbQuery = db.query(`
+        DELETE FROM comments
+        WHERE comment_id = $1
+        RETURNING *`,
+    [comment_id])
+
+    return Promise.all([dbQuery, idCheck])
+    .then(([{rows}]) => {
+        if (rows.length > 0){
+            return {status: 204, msg: "Comment deleted"}
+        }
+    })
+}

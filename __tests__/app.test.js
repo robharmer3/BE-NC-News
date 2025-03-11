@@ -246,7 +246,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       expect(body.msg).toBe("Resource not found")
     })
   })
-  test("404: Responds with bad request when given a invalid post", () => {
+  test("400: Responds with bad request when given a invalid post", () => {
     return request(app)
     .post("/api/articles/2/comments")
     .send({
@@ -323,6 +323,33 @@ describe("PATCH /api/articles/:article_id", () => {
     .expect(404)
     .then(({ body }) => {
       expect(body.msg).toBe("Resource not found")
+    })
+  })
+})
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: Responds with confirmation. Comment of given comment ID is deleted", () => {
+    return request(app)
+    .delete("/api/comments/3")
+    .expect(204)
+    .then(({ body }) => {
+      expect(body).toEqual({})
+    })
+  })
+  test("404: Responds with page not found, when given a valid ID but no comment ID is found", () => {
+    return request(app)
+    .delete("/api/comments/50")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Resource not found")
+    })
+  })
+  test("400: Responds with bad request, when given a invalid ID", () => {
+    return request(app)
+    .delete("/api/comments/apple")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
     })
   })
 })
