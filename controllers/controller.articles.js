@@ -1,8 +1,10 @@
 const { fetchArticleByID, fetchAllArticles, updateArticleById } = require("../models/model.articles")
 
 exports.getAllArticles = (request, response) => {
-    fetchAllArticles()
+    const {sort_by} = request.query
+    fetchAllArticles(sort_by)
     .then((articles) => {
+        console.log(articles)
         response.status(200).send({ articles })
     })
 }

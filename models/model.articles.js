@@ -1,7 +1,8 @@
 const { checkIfExists } = require("../app.utils");
 const db = require("../db/connection");
 
-exports.fetchAllArticles = () => {
+exports.fetchAllArticles = (sort_by) => {
+    console.log(sort_by)
     return db.query(
         `SELECT articles.*,
         COUNT(comments.article_id) AS comment_count

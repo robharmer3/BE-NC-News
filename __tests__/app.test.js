@@ -371,7 +371,6 @@ describe("GET /api/users", () => {
     .get("/api/users")
     .expect(200)
     .then(({ body }) => {
-      console.log(body)
       expect(body.users.length).toBe(4)
       body.users.forEach((user) => {
         expect(user).toMatchObject({
@@ -390,4 +389,17 @@ describe("GET /api/users", () => {
       expect(body.msg).toBe("Page not found")
     })
   })
+})
+
+describe("GET /api/articles (sorted queries)", () => {
+  test.only("200: Responds with all articles, sorted by article ID",() => {
+    return request(app)
+    .get("/api/articles?sort_by=article_id")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "article_id"})
+    })
+  }
+  )
 })
