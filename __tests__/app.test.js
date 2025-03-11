@@ -261,13 +261,13 @@ describe("POST /api/articles/:article_id/comments", () => {
 })
 
 describe("PATCH /api/articles/:article_id", () => {
-  test("201: Responds with the updated article of the given article ID", () => {
+  test("200: Responds with the updated article of the given article ID", () => {
     return request(app)
     .patch("/api/articles/6")
     .send({
       inc_votes: 1
     })
-    .expect(201)
+    .expect(200)
     .then(({body}) => {
       expect(body.article).toMatchObject({
         article_id: 6,
@@ -282,13 +282,13 @@ describe("PATCH /api/articles/:article_id", () => {
       })
     })
   })
-  test("201: Responds with the updated article of the given article ID", () => {
+  test("200: Responds with the updated article of the given article ID", () => {
     return request(app)
     .patch("/api/articles/1")
     .send({
       inc_votes: -100
     })
-    .expect(201)
+    .expect(200)
     .then(({body}) => {
       expect(body.article).toMatchObject({
         article_id: 1,
@@ -323,6 +323,17 @@ describe("PATCH /api/articles/:article_id", () => {
     .expect(404)
     .then(({ body }) => {
       expect(body.msg).toBe("Resource not found")
+    })
+  })
+  test("400: Responds with bad request, when not given valid votes", () => {
+    return request(app)
+    .patch("/api/articles/3")
+    .send({
+      apple: "Hello"
+    })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
     })
   })
 })
