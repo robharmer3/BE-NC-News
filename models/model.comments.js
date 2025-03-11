@@ -1,7 +1,5 @@
-const format = require("pg-format");
 const { checkIfExists } = require("../app.utils");
 const db = require("../db/connection");
-const { convertTimestampToDate } = require("../db/seeds/utils");
 
 exports.fetchCommentsByArticleId = (article_id) => {
     const idCheck = checkIfExists("articles", "article_id", article_id)
