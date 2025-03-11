@@ -23,7 +23,7 @@ exports.patchArticleById = (request, response, next) => {
     const { article_id } = request.params
     updateArticleById(article_id, inc_votes)
     .then((article) => {
-        response.status(201).send({article})
+        response.status(200).send({article})
     })
     .catch((error) => {
         next(error)

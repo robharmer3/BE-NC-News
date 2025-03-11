@@ -37,6 +37,10 @@ exports.fetchArticleByID = (article_id) => {
 }
 
 exports.updateArticleById = (article_id, votes) => {
+    if(!votes){
+        return Promise.reject({status: 400, msg: "Bad Request, invalid input"})
+    }
+
     const articleCheck = checkIfExists("articles", "article_id", article_id)
 
     const dbQuery = db.query(

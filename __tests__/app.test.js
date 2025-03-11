@@ -51,7 +51,7 @@ describe("GET /api/topics", () => {
     .get("/api/topic")
     .expect(404)
     .then(({ body }) => {
-      expect(body.msg).toBe("Page not found, check your spelling?")
+      expect(body.msg).toBe("Page not found")
     })
   })
 })
@@ -126,7 +126,7 @@ describe("GET /api/articles", () => {
     .get("/api/article")
     .expect(404)
     .then(({ body }) => {
-      expect(body.msg).toBe("Page not found, check your spelling?")
+      expect(body.msg).toBe("Page not found")
     })
   })
 })
@@ -206,7 +206,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         body: "Hello World!",
         votes: 0,
         author: "butter_bridge",
-        created_at: null
+        created_at: expect.any(String)
       })
     })
   })
@@ -246,16 +246,28 @@ describe("POST /api/articles/:article_id/comments", () => {
       expect(body.msg).toBe("Resource not found")
     })
   })
+  test("400: Responds with bad request when given a invalid post", () => {
+    return request(app)
+    .post("/api/articles/2/comments")
+    .send({
+      car: "Ford Mustand",
+      age: 1014
+    })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
 })
 
 describe("PATCH /api/articles/:article_id", () => {
-  test("201: Responds with the updated article of the given article ID", () => {
+  test("200: Responds with the updated article of the given article ID", () => {
     return request(app)
     .patch("/api/articles/6")
     .send({
       inc_votes: 1
     })
-    .expect(201)
+    .expect(200)
     .then(({body}) => {
       expect(body.article).toMatchObject({
         article_id: 6,
@@ -270,13 +282,13 @@ describe("PATCH /api/articles/:article_id", () => {
       })
     })
   })
-  test("201: Responds with the updated article of the given article ID", () => {
+  test("200: Responds with the updated article of the given article ID", () => {
     return request(app)
     .patch("/api/articles/1")
     .send({
       inc_votes: -100
     })
-    .expect(201)
+    .expect(200)
     .then(({body}) => {
       expect(body.article).toMatchObject({
         article_id: 1,
@@ -311,6 +323,44 @@ describe("PATCH /api/articles/:article_id", () => {
     .expect(404)
     .then(({ body }) => {
       expect(body.msg).toBe("Resource not found")
+    })
+  })
+  test("400: Responds with bad request, when not given valid votes", () => {
+    return request(app)
+    .patch("/api/articles/3")
+    .send({
+      apple: "Hello"
+    })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
+})
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: Responds with confirmation. Comment of given comment ID is deleted", () => {
+    return request(app)
+    .delete("/api/comments/3")
+    .expect(204)
+    .then(({ body }) => {
+      expect(body).toEqual({})
+    })
+  })
+  test("404: Responds with page not found, when given a valid ID but no comment ID is found", () => {
+    return request(app)
+    .delete("/api/comments/50")
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Resource not found")
+    })
+  })
+  test("400: Responds with bad request, when given a invalid ID", () => {
+    return request(app)
+    .delete("/api/comments/apple")
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
     })
   })
 })
