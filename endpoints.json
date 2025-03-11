@@ -66,6 +66,10 @@
   },
   "POST /api/articles/:article_id/comments": {
     "description" : "serves the added comment to the given article ID",
+    "exampleBody": {
+      "username": "'butter_bridge'",
+      "body": "'Hello World!'"
+    },
     "exampleResponse": {
       "comment": {
         "comment_id": 19,
@@ -75,6 +79,22 @@
         "author": "'butter_bridge'",
         "created_at": null
       }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description" : "serves the updated comment to the fiven article ID",
+    "exampleBody": {
+        "inc_votes": "newVotes"
+    },
+    "exampleResponse": {
+      "article_id": 6,
+      "title": "'A'",
+      "topic": "'mitch'",
+      "author": "'icellusedkars'",
+      "body": "'Delicious tin of cat food'",
+      "created_at": "2020-10-18T01:00:00.000Z",
+      "votes": 1,
+      "article_img_url": "'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'"
     }
   }
 }

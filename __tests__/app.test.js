@@ -51,7 +51,7 @@ describe("GET /api/topics", () => {
     .get("/api/topic")
     .expect(404)
     .then(({ body }) => {
-      expect(body.msg).toBe("Page not found, check your spelling?")
+      expect(body.msg).toBe("Page not found")
     })
   })
 })
@@ -126,7 +126,7 @@ describe("GET /api/articles", () => {
     .get("/api/article")
     .expect(404)
     .then(({ body }) => {
-      expect(body.msg).toBe("Page not found, check your spelling?")
+      expect(body.msg).toBe("Page not found")
     })
   })
 })
@@ -206,7 +206,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         body: "Hello World!",
         votes: 0,
         author: "butter_bridge",
-        created_at: null
+        created_at: expect.any(String)
       })
     })
   })
@@ -244,6 +244,18 @@ describe("POST /api/articles/:article_id/comments", () => {
     .expect(404)
     .then(({ body }) => {
       expect(body.msg).toBe("Resource not found")
+    })
+  })
+  test("404: Responds with bad request when given a invalid post", () => {
+    return request(app)
+    .post("/api/articles/2/comments")
+    .send({
+      car: "Ford Mustand",
+      age: 1014
+    })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
     })
   })
 })

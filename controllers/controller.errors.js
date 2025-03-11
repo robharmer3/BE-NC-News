@@ -13,7 +13,7 @@ exports.handleSqlError = (error, request, response, next) => {
 }
 
 exports.handleIncorrectPath = (request, response) => {
-    response.status(404).send({ msg : "Page not found, check your spelling?"})
+    response.status(404).send({ msg : "Page not found"})
 }
 
 exports.handleServerError = (error, request, response, next) => {
