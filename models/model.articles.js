@@ -2,14 +2,7 @@ const db = require("../db/connection");
 
 exports.fetchAllArticles = () => {
     return db.query(
-        `SELECT 
-        articles.article_id,
-        articles.title,
-        articles.topic,
-        articles.author,
-        articles.created_at,
-        articles.votes,
-        articles.article_img_url,
+        `SELECT articles.*,
         COUNT(comments.article_id) AS comment_count
         FROM 
         articles
