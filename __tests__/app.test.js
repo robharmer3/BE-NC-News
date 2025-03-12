@@ -574,7 +574,16 @@ describe("GET /api/articles (topic queries)", () => {
       })
     }
   )
-  test("404: Responds with bad request when topic is valid but not found",() => {
+  test("200: Responds with empty array when topic exist but there are no articles",() => {
+    return request(app)
+    .get("/api/articles?topic=paper")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(0)
+      })
+    }
+  )
+  test("404: Responds with resource not found when topic is valid but not found",() => {
     return request(app)
     .get("/api/articles?topic=magic")
     .expect(404)
