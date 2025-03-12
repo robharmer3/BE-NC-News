@@ -2,29 +2,36 @@ const format = require("pg-format");
 const { checkIfExists } = require("../app.utils");
 const db = require("../db/connection");
 
-exports.fetchAllArticles = (sort_by = "created_at", order = "DESC") => {
+exports.fetchAllArticles = (sort_by = "created_at", order = "DESC", topic) => {
+    let topicCheck = null
+    let dbStr = `SELECT articles.*, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `
+
+    if(topic){
+        topicCheck = checkIfExists("articles", "topic", topic)
+        dbStr += `WHERE topic = '${topic}' `
+    }
+
+    dbStr += `GROUP BY articles.article_id `
+    
     const allowedSorts = ["article_id", "title", "topic", "author", "created_at", "votes", "article_img_url"]
     if(!allowedSorts.includes(sort_by)){
         return Promise.reject({ status: 400, msg: "Bad Request, invalid input"})
+    } else {
+        dbStr += `ORDER BY %I `
     }
 
     if(order === "ASC" || order === "asc" || order === "desc" || order === "DESC"){
-        return db.query(format(
-            `SELECT articles.*,
-            COUNT(comments.article_id) AS comment_count
-            FROM articles
-            LEFT JOIN comments
-            ON articles.article_id = comments.article_id
-            GROUP BY articles.article_id
-            ORDER BY %I %s;`,
-            sort_by, order)
-        )
-        .then(({rows}) => {
-            return rows
-        })
+        dbStr += order+";"
+    } else {
+        return Promise.reject({ status: 400, msg: "Bad Request, invalid input"})
     }
 
-    return Promise.reject({ status: 400, msg: "Bad Request, invalid input"})
+    const dbFormatted = format(dbStr, sort_by)
+
+    return Promise.all([db.query(dbFormatted), topicCheck])
+    .then(([{rows}]) => {
+        return rows
+    })   
 }
 
 exports.fetchArticleByID = (article_id) => {
