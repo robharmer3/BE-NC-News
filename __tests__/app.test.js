@@ -113,14 +113,14 @@ describe("GET /api/articles", () => {
       })
     })
   })
-  // test("200: Article Object should be sorted by date in descending order, as the default", () => {
-  //   return request(app)
-  //   .get("/api/articles")
-  //   .expect(200)
-  //   .then(({ body }) => {
-  //     expect(body.articles).toBeSorted({ key: "created_at", descending: true})
-  //   })
-  // })
+  test("200: Article Object should be sorted by date in descending order, as the default", () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.articles).toBeSorted({ key: "created_at", descending: true})
+    })
+  })
   test("404: Responds with an page not found error when given a invalid path", () => {
     return request(app)
     .get("/api/article")
@@ -547,6 +547,39 @@ describe("GET /api/articles (sorted queries)", () => {
     .expect(400)
     .then(({body}) => {
       expect(body.msg).toBe("Bad Request, invalid input")
+      })
+    }
+  )
+})
+
+describe("GET /api/articles (topic queries)", () => {
+  test("200: Responds with all articles with given topic",() => {
+    return request(app)
+    .get("/api/articles?topic=mitch")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(12)
+      body.articles.forEach(article => {
+        expect(article.topic).toBe("mitch")
+        })
+      });
+    }
+  )
+  test("200: Responds with all articles when no topic is given",() => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      })
+    }
+  )
+  test("404: Responds with bad request when topic is valid but not found",() => {
+    return request(app)
+    .get("/api/articles?topic=magic")
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Resource not found")
       })
     }
   )
