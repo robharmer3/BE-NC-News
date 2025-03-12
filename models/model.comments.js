@@ -59,3 +59,23 @@ exports.removeCommentsById = (comment_id) => {
         }
     })
 }
+
+exports.updateCommentById = (comment_id, votes) => {
+    if(!votes){
+        return Promise.reject({status: 400, msg: "Bad Request, invalid input"})
+    }
+
+    const commentCheck = checkIfExists("comments", "comment_id", comment_id)
+    
+    const dbQuery =  db.query(`
+        UPDATE comments
+        SET votes = votes + $1
+        WHERE comment_id = $2
+        RETURNING *`,
+        [votes, comment_id])
+
+    return Promise.all([dbQuery, commentCheck])
+    .then(([comment]) => {
+        return comment.rows[0]
+    })
+}

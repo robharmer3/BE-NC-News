@@ -628,3 +628,86 @@ describe("GET /api/users/:username", () => {
     })
   })
 })
+
+describe("PATCH /api/comments/:comment_id", () => {
+  test("200: Responds with updated comment", () => {
+    return request(app)
+    .patch("/api/comments/3")
+    .send({
+      inc_votes: 1
+    })
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.comment).toMatchObject({
+        comment_id: 3,
+        article_id: 1,
+        body: "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+        votes: 101,
+        author: "icellusedkars",
+        created_at: expect.any(String),
+      })
+    })
+  })
+  test("200: Responds with updated comment", () => {
+    return request(app)
+    .patch("/api/comments/3")
+    .send({
+      inc_votes: -1
+    })
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.comment).toMatchObject({
+        comment_id: 3,
+        article_id: 1,
+        body: "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+        votes: 99,
+        author: "icellusedkars",
+        created_at: expect.any(String),
+      })
+    })
+  })
+  test("404: Responds rescource not found when give a valid id that doesnt exist", () => {
+    return request(app)
+    .patch("/api/comments/50")
+    .send({
+      inc_votes: 1
+    })
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Resource not found")
+    })
+  })
+  test("400: Responds bad request when give a invalid id", () => {
+    return request(app)
+    .patch("/api/comments/apple")
+    .send({
+      inc_votes: 1
+    })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
+  test("400: Responds bad request when give a misformed body", () => {
+    return request(app)
+    .patch("/api/comments/3")
+    .send({
+      cars: "Tesla"
+    })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
+  test("400: Responds bad request when votes is invalid", () => {
+    return request(app)
+    .patch("/api/comments/3")
+    .send({
+      inc_votes: "Tesla"
+    })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
+})
