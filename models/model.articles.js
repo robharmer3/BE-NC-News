@@ -1,26 +1,30 @@
+const format = require("pg-format");
 const { checkIfExists } = require("../app.utils");
 const db = require("../db/connection");
 
-exports.fetchAllArticles = (sort_by) => {
-    console.log(sort_by)
-    return db.query(
-        `SELECT articles.*,
-        COUNT(comments.article_id) AS comment_count
-        FROM 
-        articles
-        LEFT JOIN 
-        comments
-        ON 
-        articles.article_id = comments.article_id
-        GROUP BY 
-        articles.article_id
-        ORDER BY
-        articles.created_at
-        DESC;`
-    )
-    .then(({rows}) => {
-        return rows
-    })
+exports.fetchAllArticles = (sort_by = "created_at", order = "DESC") => {
+    const allowedSorts = ["article_id", "title", "topic", "author", "created_at", "votes", "article_img_url"]
+    if(!allowedSorts.includes(sort_by)){
+        return Promise.reject({ status: 400, msg: "Bad Request, invalid input"})
+    }
+
+    if(order === "ASC" || order === "asc" || order === "desc" || order === "DESC"){
+        return db.query(format(
+            `SELECT articles.*,
+            COUNT(comments.article_id) AS comment_count
+            FROM articles
+            LEFT JOIN comments
+            ON articles.article_id = comments.article_id
+            GROUP BY articles.article_id
+            ORDER BY %I %s;`,
+            sort_by, order)
+        )
+        .then(({rows}) => {
+            return rows
+        })
+    }
+
+    return Promise.reject({ status: 400, msg: "Bad Request, invalid input"})
 }
 
 exports.fetchArticleByID = (article_id) => {

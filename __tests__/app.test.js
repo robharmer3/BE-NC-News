@@ -113,14 +113,14 @@ describe("GET /api/articles", () => {
       })
     })
   })
-  test("200: Article Object should be sorted by date in descending order, as the default", () => {
-    return request(app)
-    .get("/api/articles")
-    .expect(200)
-    .then(({ body }) => {
-      expect(body.articles).toBeSorted({ key: "created_at", descending: true})
-    })
-  })
+  // test("200: Article Object should be sorted by date in descending order, as the default", () => {
+  //   return request(app)
+  //   .get("/api/articles")
+  //   .expect(200)
+  //   .then(({ body }) => {
+  //     expect(body.articles).toBeSorted({ key: "created_at", descending: true})
+  //   })
+  // })
   test("404: Responds with an page not found error when given a invalid path", () => {
     return request(app)
     .get("/api/article")
@@ -392,14 +392,162 @@ describe("GET /api/users", () => {
 })
 
 describe("GET /api/articles (sorted queries)", () => {
-  test.only("200: Responds with all articles, sorted by article ID",() => {
+  test("200: Responds with all articles, sorted by article ID descending",() => {
     return request(app)
     .get("/api/articles?sort_by=article_id")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
-      expect(body.articles).toBeSorted({key: "article_id"})
-    })
-  }
+      expect(body.articles).toBeSorted({key: "article_id", descending: true})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by title descending",() => {
+    return request(app)
+    .get("/api/articles?sort_by=title")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "title", descending: true})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by topic descending",() => {
+    return request(app)
+    .get("/api/articles?sort_by=topic")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "topic", descending: true})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by author descending",() => {
+    return request(app)
+    .get("/api/articles?sort_by=author")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "author", descending: true})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by created_at descending (DEFAULT)",() => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "created_at", descending: true})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by votes descending",() => {
+    return request(app)
+    .get("/api/articles?sort_by=votes")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "votes", descending: true})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by article_img_url descending",() => {
+    return request(app)
+    .get("/api/articles?sort_by=article_img_url")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "article_img_url", descending: true})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by article ID ascending",() => {
+    return request(app)
+    .get("/api/articles?sort_by=article_id&&order=asc")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "article_id", descending: false})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by title ascending",() => {
+    return request(app)
+    .get("/api/articles?sort_by=title&&order=asc")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "title", descending: false})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by topic ascending",() => {
+    return request(app)
+    .get("/api/articles?sort_by=topic&&order=asc")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "topic", descending: false})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by author ascending",() => {
+    return request(app)
+    .get("/api/articles?sort_by=author&&order=asc")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "author", descending: false})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by created_at ascending",() => {
+    return request(app)
+    .get("/api/articles?order=asc")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "created_at", descending: false})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by votes ascending",() => {
+    return request(app)
+    .get("/api/articles?sort_by=votes&&order=asc")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "votes", descending: false})
+      })
+    }
+  )
+  test("200: Responds with all articles, sorted by article_img_url ascending",() => {
+    return request(app)
+    .get("/api/articles?sort_by=article_img_url&&order=asc")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(13)
+      expect(body.articles).toBeSorted({key: "article_img_url", descending: false})
+      })
+    }
+  )
+  test("400: Responds with bad request when sorted by is invalid",() => {
+    return request(app)
+    .get("/api/articles?sort_by=apple")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+      })
+    }
+  )
+  test("400: Responds with bad request when order by is invalid",() => {
+    return request(app)
+    .get("/api/articles?order=apple")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+      })
+    }
   )
 })
