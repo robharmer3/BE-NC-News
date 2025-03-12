@@ -605,3 +605,26 @@ describe("GET /api/articles/:article_id (comment_count)", () => {
     })
   })
 })
+
+describe("GET /api/users/:username", () => {
+  test("200: Responds with an user object of the given username", () => {
+    return request(app)
+    .get("/api/users/butter_bridge")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.user).toMatchObject({
+        username: "butter_bridge",
+        name: "jonny",
+        avatar_url: "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      })
+    })
+  })
+  test("404: Responds with resouce not found object of the given username that doesnt exist", () => {
+    return request(app)
+    .get("/api/users/darth_vader")
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Resource not found")
+    })
+  })
+})

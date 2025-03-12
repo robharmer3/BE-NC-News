@@ -5,7 +5,7 @@ const { getAllTopics } = require("./controllers/controller.topics");
 const { handleServerError, handleIncorrectPath, handleCustomError, handleSqlError } = require("./controllers/controller.errors");
 const { getArticleById, getAllArticles, patchArticleById } = require("./controllers/controller.articles");
 const { getCommentsByArticleId, postCommentsByArticleId, deleteCommentsById } = require("./controllers/controller.comments");
-const { getAllUsers } = require("./controllers/controllers.users");
+const { getAllUsers, getUserByUsername } = require("./controllers/controllers.users");
 
 app.use(express.json())
 
@@ -18,6 +18,8 @@ app.get("/api/topics", getAllTopics)
 app.get("/api/articles", getAllArticles)
 
 app.get("/api/users", getAllUsers)
+
+app.get("/api/users/:username", getUserByUsername)
 
 app.get("/api/articles/:article_id", getArticleById)
 
