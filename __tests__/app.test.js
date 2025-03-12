@@ -71,7 +71,8 @@ describe("GET /api/articles/:article_id", () => {
         created_at: "2020-11-03T09:12:00.000Z",
         votes: 0,
         article_img_url:
-          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"  
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        comment_count: "2"  
       })
     })
   })
@@ -592,4 +593,15 @@ describe("GET /api/articles (topic queries)", () => {
       })
     }
   )
+})
+
+describe("GET /api/articles/:article_id (comment_count)", () => {
+  test("200: Responds with the total of all comments with the given article ID", () => {
+    return request(app)
+    .get("/api/articles/1")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.article.comment_count).toBe("11")
+    })
+  })
 })
