@@ -889,3 +889,47 @@ describe("GET /api/articles/:article_id/comments (pagination)", () => {
     }
   )
 })
+
+describe("POST /api/topics", () => {
+  test("201: Responds with the newly posted topic", () => {
+    return request(app)
+    .post("/api/topics")
+    .send({
+      slug: "Horses",
+      description: "Why are horse evil?!"
+    })
+    .expect(201)
+    .then(({body}) => {
+      expect(body.topic).toMatchObject({
+        slug: "Horses",
+        description: "Why are horse evil?!",
+        img_url: null
+      })
+    })
+  })
+  test("400: Responds with bad request when given a malformed post", () => {
+    return request(app)
+    .post("/api/topics")
+    .send({
+      car: "Ford Mustand",
+      age: 1014
+    })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
+  test("400: Responds with bad request when given a slug that already exisits", () => {
+    return request(app)
+    .post("/api/articles")
+    .send({
+      slug: "cats",
+      description: "Why are horse evil?!"
+    })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
+})
+
