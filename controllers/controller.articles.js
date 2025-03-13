@@ -1,10 +1,10 @@
 const { fetchArticleByID, fetchAllArticles, updateArticleById, createArticle } = require("../models/model.articles")
 
 exports.getAllArticles = (request, response, next) => {
-    const {sort_by, order, topic} = request.query
-    fetchAllArticles(sort_by, order, topic)
+    const {sort_by, order, topic, limit, page} = request.query
+    fetchAllArticles(sort_by, order, topic, limit, page)
     .then((articles) => {
-        response.status(200).send({ articles })
+        response.status(200).send({ articles: articles, total_count: articles.total_count })
     }).catch((error) => {
         next(error)
     })

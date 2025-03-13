@@ -2,7 +2,7 @@ const format = require("pg-format");
 const { checkIfExists } = require("../app.utils");
 const db = require("../db/connection");
 
-exports.fetchAllArticles = (sort_by = "created_at", order = "DESC", topic) => {
+exports.fetchAllArticles = (sort_by = "created_at", order = "DESC", topic, limit = 10, page = 1) => {
     let topicCheck = null
     let dbStr = `SELECT articles.*, CAST(COUNT(comments.article_id)AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `
 
@@ -21,15 +21,28 @@ exports.fetchAllArticles = (sort_by = "created_at", order = "DESC", topic) => {
     }
 
     if(order === "ASC" || order === "asc" || order === "desc" || order === "DESC"){
-        dbStr += order+";"
+        dbStr += order
     } else {
         return Promise.reject({ status: 400, msg: "Bad Request, invalid input"})
     }
 
-    const dbFormatted = format(dbStr, sort_by)
+    if(Number(limit)){
+        dbStr += ` LIMIT %s`
+    } else {
+        return Promise.reject({ status: 400, msg: "Bad Request, invalid input"})
+    }
+
+    if(Number(page)){
+        dbStr += ` OFFSET ${limit * (page -1)}`
+    } else {
+        return Promise.reject({ status: 400, msg: "Bad Request, invalid input"})
+    }
+
+    const dbFormatted = format(dbStr, sort_by, limit)
 
     return Promise.all([db.query(dbFormatted), topicCheck])
     .then(([{rows}]) => {
+        rows.total_count = rows.length
         return rows
     })   
 }
