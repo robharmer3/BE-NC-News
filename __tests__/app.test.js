@@ -72,7 +72,7 @@ describe("GET /api/articles/:article_id", () => {
         votes: 0,
         article_img_url:
           "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-        comment_count: "2"  
+        comment_count: 2 
       })
     })
   })
@@ -109,7 +109,7 @@ describe("GET /api/articles", () => {
           created_at : expect.any(String),
           votes : expect.any(Number),
           article_img_url : expect.any(String),
-          comment_count : expect.any(String)
+          comment_count : expect.any(Number)
         })
       })
     })
@@ -601,7 +601,7 @@ describe("GET /api/articles/:article_id (comment_count)", () => {
     .get("/api/articles/1")
     .expect(200)
     .then(({body}) => {
-      expect(body.article.comment_count).toBe("11")
+      expect(body.article.comment_count).toBe(11)
     })
   })
 })
@@ -708,6 +708,73 @@ describe("PATCH /api/comments/:comment_id", () => {
     .expect(400)
     .then(({ body }) => {
       expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
+})
+
+describe("POST /api/articles", () => {
+  test("201: Responds with the newly posted article", () => {
+    return request(app)
+    .post("/api/articles")
+    .send({
+      author: "butter_bridge",
+      title: "You are wrong if you don't love cats!",
+      body: "Hello Cat World",
+      topic: "cats"
+    })
+    .expect(201)
+    .then(({body}) => {
+      expect(body.article).toMatchObject({
+        article_id: 14,
+        title: "You are wrong if you don't love cats!",
+        topic: "cats",
+        author: "butter_bridge",
+        body: "Hello Cat World",
+        created_at: expect.any(String),
+        votes: 0,
+        article_img_url: null,
+        comment_count: 0
+      })
+    })
+  })
+  test("400: Responds with bad request when given a malformed post", () => {
+    return request(app)
+    .post("/api/articles")
+    .send({
+      car: "Ford Mustand",
+      age: 1014
+    })
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+    })
+  })
+  test("404: Responds with not found when given an invaid author", () => {
+    return request(app)
+    .post("/api/articles")
+    .send({
+      author: "Darth_Vader",
+      title: "I am your father",
+      body: "Hello world",
+      topic: "cats"
+    })
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Resource not found")
+    })
+  })
+  test("404: Responds with not found request when given an invaid topic", () => {
+    return request(app)
+    .post("/api/articles")
+    .send({
+      author: "butter_bridge",
+      title: "I am your father",
+      body: "Hello world",
+      topic: "apples"
+    })
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Resource not found")
     })
   })
 })

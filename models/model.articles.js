@@ -4,7 +4,7 @@ const db = require("../db/connection");
 
 exports.fetchAllArticles = (sort_by = "created_at", order = "DESC", topic) => {
     let topicCheck = null
-    let dbStr = `SELECT articles.*, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `
+    let dbStr = `SELECT articles.*, CAST(COUNT(comments.article_id)AS INT) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `
 
     if(topic){
         topicCheck = checkIfExists("topics", "slug", topic)
@@ -36,7 +36,7 @@ exports.fetchAllArticles = (sort_by = "created_at", order = "DESC", topic) => {
 
 exports.fetchArticleByID = (article_id) => {
     return db.query(
-        `SELECT articles.*, COUNT(comments.article_id) AS comment_count
+        `SELECT articles.*, CAST(COUNT(comments.article_id)AS INT) AS comment_count
         FROM articles
         LEFT JOIN comments
         ON articles.article_id = comments.article_id
@@ -71,4 +71,43 @@ exports.updateArticleById = (article_id, votes) => {
     .then(([ comment ]) => {
         return comment.rows[0]
     })
+}
+
+exports.createArticle = (author, title, body, topic, votes = 0, article_img_url) => {
+    const created_at = new Date()
+
+    if(!article_img_url){
+        article_img_url = null
+    }
+
+    if(author, title, body, topic){
+        const authorCheck = checkIfExists("users", "username", author)
+        const topicCheck = checkIfExists("topics", "slug", topic)
+        const dbQuery = db.query(`
+            INSERT INTO articles
+            (title, topic, author, body, created_at, votes, article_img_url)
+            VALUES
+            ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *`,
+            [title, topic, author, body, created_at, votes, article_img_url])
+
+        return Promise.all([dbQuery, authorCheck, topicCheck])
+        .then(([{rows}]) => {
+            return db.query(`
+                SELECT articles.*, CAST(COUNT(comments.article_id)AS INT) AS comment_count
+                FROM articles
+                LEFT JOIN comments
+                ON articles.article_id = comments.article_id
+                WHERE articles.article_id = $1
+                GROUP BY articles.article_id`,
+                [rows[0].article_id])
+        })
+        .then(({rows}) => {
+            return rows[0]
+        })
+    } else {
+        return Promise.reject({status: 400, msg: "Bad Request, invalid input"})
+    }
+    
+    
 }
