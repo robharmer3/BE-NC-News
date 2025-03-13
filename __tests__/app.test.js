@@ -395,7 +395,7 @@ describe("GET /api/users", () => {
 describe("GET /api/articles (sorted queries)", () => {
   test("200: Responds with all articles, sorted by article ID descending",() => {
     return request(app)
-    .get("/api/articles?sort_by=article_id")
+    .get("/api/articles?sort_by=article_id&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -405,7 +405,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by title descending",() => {
     return request(app)
-    .get("/api/articles?sort_by=title")
+    .get("/api/articles?sort_by=title&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -415,7 +415,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by topic descending",() => {
     return request(app)
-    .get("/api/articles?sort_by=topic")
+    .get("/api/articles?sort_by=topic&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -425,7 +425,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by author descending",() => {
     return request(app)
-    .get("/api/articles?sort_by=author")
+    .get("/api/articles?sort_by=author&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -435,7 +435,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by created_at descending (DEFAULT)",() => {
     return request(app)
-    .get("/api/articles")
+    .get("/api/articles?limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -445,7 +445,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by votes descending",() => {
     return request(app)
-    .get("/api/articles?sort_by=votes")
+    .get("/api/articles?sort_by=votes&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -455,7 +455,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by article_img_url descending",() => {
     return request(app)
-    .get("/api/articles?sort_by=article_img_url")
+    .get("/api/articles?sort_by=article_img_url&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -465,7 +465,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by article ID ascending",() => {
     return request(app)
-    .get("/api/articles?sort_by=article_id&&order=asc")
+    .get("/api/articles?sort_by=article_id&&order=asc&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -475,7 +475,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by title ascending",() => {
     return request(app)
-    .get("/api/articles?sort_by=title&&order=asc")
+    .get("/api/articles?sort_by=title&&order=asc&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -485,7 +485,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by topic ascending",() => {
     return request(app)
-    .get("/api/articles?sort_by=topic&&order=asc")
+    .get("/api/articles?sort_by=topic&&order=asc&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -495,7 +495,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by author ascending",() => {
     return request(app)
-    .get("/api/articles?sort_by=author&&order=asc")
+    .get("/api/articles?sort_by=author&&order=asc&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -505,7 +505,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by created_at ascending",() => {
     return request(app)
-    .get("/api/articles?order=asc")
+    .get("/api/articles?order=asc&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -515,7 +515,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by votes ascending",() => {
     return request(app)
-    .get("/api/articles?sort_by=votes&&order=asc")
+    .get("/api/articles?sort_by=votes&&order=asc&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -525,7 +525,7 @@ describe("GET /api/articles (sorted queries)", () => {
   )
   test("200: Responds with all articles, sorted by article_img_url ascending",() => {
     return request(app)
-    .get("/api/articles?sort_by=article_img_url&&order=asc")
+    .get("/api/articles?sort_by=article_img_url&&order=asc&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -556,7 +556,7 @@ describe("GET /api/articles (sorted queries)", () => {
 describe("GET /api/articles (topic queries)", () => {
   test("200: Responds with all articles with given topic",() => {
     return request(app)
-    .get("/api/articles?topic=mitch")
+    .get("/api/articles?topic=mitch&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(12)
@@ -568,7 +568,7 @@ describe("GET /api/articles (topic queries)", () => {
   )
   test("200: Responds with all articles when no topic is given",() => {
     return request(app)
-    .get("/api/articles")
+    .get("/api/articles?limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(13)
@@ -577,7 +577,7 @@ describe("GET /api/articles (topic queries)", () => {
   )
   test("200: Responds with empty array when topic exist but there are no articles",() => {
     return request(app)
-    .get("/api/articles?topic=paper")
+    .get("/api/articles?topic=paper&&limit=13")
     .expect(200)
     .then(({body}) => {
       expect(body.articles.length).toBe(0)
@@ -777,4 +777,63 @@ describe("POST /api/articles", () => {
       expect(body.msg).toBe("Resource not found")
     })
   })
+})
+
+describe("GET /api/articles (pagination)", () => {
+  test("200: Responds with all articles, limited by the given limit query",() => {
+    return request(app)
+    .get("/api/articles?limit=5")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(5)
+      });
+    }
+  )
+  test("200: Responds with all articles, limited by page query",() => {
+    return request(app)
+    .get("/api/articles?sort_by=article_id&&order=asc&&page=2")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(3)
+      expect(body.articles[0].article_id).toBe(11)
+      });
+    }
+  )
+  test("200: Responds total_count property",() => {
+    return request(app)
+    .get("/api/articles?sort_by=article_id&&order=asc&&limit=2")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles.length).toBe(2)
+      expect(body.total_count).toBe(2)
+      });
+    }
+  )
+  test("200: Responds empty array when given a page more than total number of articles",() => {
+    return request(app)
+    .get("/api/articles?sort_by=article_id&&order=asc&&page=5")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.articles).toEqual([])
+      });
+    }
+  )
+  test("400: Responds with bad request when given an invalid limit",() => {
+    return request(app)
+    .get("/api/articles?limit=apple")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+      });
+    }
+  )
+  test("400: Responds with bad request when given an invalid page",() => {
+    return request(app)
+    .get("/api/articles?page=apple")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+      });
+    }
+  )
 })
