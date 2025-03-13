@@ -3,7 +3,8 @@ const { fetchCommentsByArticleId, createCommentsByArticleId, removeCommentsById,
 
 exports.getCommentsByArticleId = (request, response, next) => {
     const {article_id} = request.params
-    fetchCommentsByArticleId(article_id)
+    const {limit, page} = request.query
+    fetchCommentsByArticleId(article_id, limit, page)
     .then((comments) => {
         response.status(200).send({comments})
     })

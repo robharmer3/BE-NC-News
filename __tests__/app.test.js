@@ -837,3 +837,55 @@ describe("GET /api/articles (pagination)", () => {
     }
   )
 })
+
+describe("GET /api/articles/:article_id/comments (pagination)", () => {
+  test("200: Responds with all comments of the given ID, limited by the given limit query",() => {
+    return request(app)
+    .get("/api/articles/1/comments?limit=5")
+    .expect(200)
+    .then(({body}) => {
+      body.comments.forEach((comment) => {
+        expect(comment.article_id).toBe(1)
+      })
+      expect(body.comments.length).toBe(5)
+      });
+    }
+  )
+  test("200: Responds with all comments of the given ID, limited by page query",() => {
+    return request(app)
+    .get("/api/articles/1/comments?page=2")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.comments.length).toBe(1)
+      expect(body.comments[0].comment_id).toBe(9)
+      });
+    }
+  )
+  test("200: Responds empty array when given a page more than total number of articles",() => {
+    return request(app)
+    .get("/api/articles/1/comments?page=5")
+    .expect(200)
+    .then(({body}) => {
+      expect(body.comments).toEqual([])
+      });
+    }
+  )
+  test("400: Responds with bad request when given an invalid limit",() => {
+    return request(app)
+    .get("/api/articles/1/comments?limit=apple")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+      });
+    }
+  )
+  test("400: Responds with bad request when given an invalid page",() => {
+    return request(app)
+    .get("/api/articles/1/comments?page=apple")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad Request, invalid input")
+      });
+    }
+  )
+})

@@ -1,15 +1,18 @@
 const { checkIfExists } = require("../app.utils");
 const db = require("../db/connection");
 
-exports.fetchCommentsByArticleId = (article_id) => {
+exports.fetchCommentsByArticleId = (article_id, limit = 10, page = 1) => {
     const idCheck = checkIfExists("articles", "article_id", article_id)
+
   
     const dbQuery = db.query(
         `SELECT * FROM comments
         WHERE article_id = $1
         ORDER BY
         created_At
-        DESC`, [article_id]
+        DESC
+        LIMIT $2
+        OFFSET $2 * ($3 - 1)`, [article_id, limit, page]
     )
 
     return Promise.all([dbQuery, idCheck])
