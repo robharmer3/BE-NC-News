@@ -1,0 +1,5 @@
+exports.topicsRouter = require("./router.topics")
+exports.articlesRouter = require("./router.articles")
+exports.usersRouter = require("./router.users")
+exports.commentsRouter = require("./router.comments")
+exports.apiRouter = require("./router.api")
