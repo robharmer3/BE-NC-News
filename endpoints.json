@@ -165,5 +165,33 @@
   },
   "DELETE /api/comments/:comment_id": {
     "description" : "deleted comment of given comment ID"
+  },
+  "POST /api/topics": {
+    "description": "serves the added topic",
+    "exampleBody": {
+      "slug": "'Horses'",
+      "description": "'Why are horse evil?!'"
+    },
+    "exampleResponse": {
+        "slug": "'Horses'",
+        "description": "'Why are horse evil?!'",
+        "img_url": null
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description" : "serves the updated comment to the given comment ID",
+    "exampleBody": {
+        "inc_votes": "newVotes"
+    },
+    "exampleResponse": {
+      "comment_id": 3,
+      "article_id": 1,
+      "body": "'Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.'",
+      "votes": 101,
+      "author": "'icellusedkars'",
+      "created_at": "2020-10-18T01:00:00.000Z"}
+  },
+  "DELETE /api/articles/:article_id": {
+    "description": "deleted article of given article ID"
   }
 }
