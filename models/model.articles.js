@@ -121,6 +121,21 @@ exports.createArticle = (author, title, body, topic, votes = 0, article_img_url)
     } else {
         return Promise.reject({status: 400, msg: "Bad Request, invalid input"})
     }
+}
+
+exports.removeArticleById = (article_id) => {
+    const idCheck = checkIfExists("articles", "article_id", article_id)
     
-    
+    const dbQuery = db.query(`
+        DELETE FROM articles
+        WHERE article_id = $1
+        RETURNING *`,
+        [article_id])
+
+    return Promise.all([dbQuery, idCheck])
+    .then(([{rows}]) => {
+        if (rows.length > 0){
+            return {status: 204, msg: "Comment deleted"}
+        }
+    })
 }

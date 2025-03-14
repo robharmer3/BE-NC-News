@@ -1,4 +1,4 @@
-const { fetchArticleByID, fetchAllArticles, updateArticleById, createArticle } = require("../models/model.articles")
+const { fetchArticleByID, fetchAllArticles, updateArticleById, createArticle, removeArticleById } = require("../models/model.articles")
 
 exports.getAllArticles = (request, response, next) => {
     const {sort_by, order, topic, limit, page} = request.query
@@ -42,4 +42,15 @@ exports.postArticle = (request, response, next) => {
     .catch((error) => {
         next(error)
     })
+}
+
+exports.deleteArticleById = (request, response, next) => {
+    const { article_id } = request.params
+        removeArticleById(article_id)
+        .then((res) => {
+            response.status(res.status).send({msg: res.msg})
+        })
+        .catch((error) => {
+            next(error)
+        })
 }
